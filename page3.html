@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Selection</title>
+    <script>
+        function goToPage4() {
+            window.location.href = 'page4.html';
+        }
+        window.onload = function() {
+            let selectedStyle = localStorage.getItem('selectedStyle');
+            let selectedCategory = localStorage.getItem('selectedCategory');
+            document.getElementById('result').innerText = `You selected: ${selectedStyle} → ${selectedCategory}`;
+        }
+    </script>
+</head>
+<body>
+    <h2>Your Selection</h2>
+    <p id="result"></p>
+    <button onclick="goToPage4()">Next</button>
+</body>
+</html>

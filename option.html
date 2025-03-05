@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Your Style - OutfitLab</title>
+  <style>
+  @font-face {
+    font-family: FashionFont;
+    src: url(Kugile_Demo.ttf);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e40af, #1f2937, #0f172a);
+    background-size: 400% 400%;
+    animation: gradientAnimation 10s ease infinite;
+    color: #f3f4f6; /* Gray-100 */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Navbar */
+nav {
+    font-family: FashionFont;
+    background: #1e293b; /* Slate-900 */
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f3f4f6; /* Gray-100 */
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+nav ul li a {
+    color: #f3f4f6; /* Gray-100 */
+    text-decoration: none;
+    font-size: 1rem;
+    position: relative;
+    padding-bottom: 5px;
+    transition: color 0.3s ease;
+}
+
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: #4f46e5; /* Indigo-600 */
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #818cf8; /* Indigo-400 */
+}
+
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    margin: 40px 0;
+    font-family: FashionFont;
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #4f46e5, #818cf8);
+    /* WebKit (Chrome, Safari, Edge, Opera) */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Standard property (newer browsers) */
+    background-clip: text;
+    /* Fallback for unsupported browsers */
+    color: #4f46e5;
+}
+
+/* Grid Layout */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    padding: 20px 40px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Style Cards */
+.style-card {
+    background: rgba(255, 255, 255, 0.1); /* Transparent white */
+    color: #f3f4f6; /* Gray-100 */
+    padding: 30px 20px;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Slightly opaque border */
+}
+
+.style-card:hover {
+    background: rgba(255, 255, 255, 0.2); /* Hover background */
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); /* Dark shadow */
+}
+
+.style-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.style-card p {
+    color: #d1d5db; /* Gray-300 */
+    font-size: 1rem;
+}
+</style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">OutfitLab</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="styles.html">Styles</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </nav>
+
+  <h1>Choose Your Style</h1>
+
+  <div class="grid-container">
+
+    <a href="cute.html" class="style-card">
+      <h2>Cute Style</h2>
+      <p>Soft & Adorable looks.</p>
+    </a>
+
+    <!-- <a href="#" class="style-card">
+      <h2>Ethnic Style</h2>
+      <p>Traditional with a modern touch.</p>
+    </a> -->
+
+    <a href="modern.html" class="style-card">
+      <h2>Modern Style</h2>
+      <p>Trendy & Bold outfits.</p>
+    </a>
+
+    <a href="casual.html" class="style-card">
+      <h2>Casual Style</h2>
+      <p>Comfortable everyday wear.</p>
+    </a>
+
+    <a href="party.html" class="style-card">
+      <h2>Party Wear</h2>
+      <p>Glamorous and flashy.</p>
+    </a>
+
+    <a href="#" class="style-card">
+      <h2>Vintage Style</h2>
+      <p>Retro and timeless.</p>
+    </a>
+
+    <a href="#" class="style-card">
+      <h2>Sporty Style</h2>
+      <p>Active and athletic.</p>
+    </a>
+
+    <a href="#" class="style-card">
+      <h2>Bohemian Style</h2>
+      <p>Free-spirited and artistic.</p>
+    </a>
+
+    <a href="#" class="style-card">
+      <h2>Minimalist Style</h2>
+      <p>Simple and clean.</p>
+    </a>
+<!-- 
+    <a href="#" class="style-card">
+      <h2>Streetwear Style</h2>
+      <p>Urban and edgy.</p>
+    </a>
+
+    <a href="#" class="style-card">
+      <h2>Professional Style</h2>
+      <p>Polished and formal.</p>
+    </a>
+
+    <a href="#" class="style-card">
+      <h2>Romantic Style</h2>
+      <p>Feminine and dreamy.</p>
+    </a> -->
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Your Style - OutfitLab</title>
+  <style>
+  @font-face {
+    font-family: FashionFont;
+    src: url(Kugile_Demo.ttf);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Background Carousel with slight fade */
+  .background-carousel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    
+  }
+
+  .background-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 1.5s ease-in-out;
+    opacity: 0;
+    filter: brightness(0.3); /* Added slight fade to background */
+  }
+
+  .background-slide.active {
+    opacity: 1;
+  }
+
+  /* Semi-transparent overlay */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Subtle dark overlay */
+    z-index: -1;
+  }
+
+  /* Navbar */
+  nav {
+    font-family: FashionFont;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+
+  nav .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+  }
+
+  nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    padding: 8px 15px;
+    border-radius: 20px;
+  }
+
+  nav ul li a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  /* Header */
+  h1 {
+    text-align: center;
+    margin: 120px 0 40px 0;
+    font-family: FashionFont;
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+  }
+
+  /* Grid Layout - Increased card sizes */
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Increased from 240px */
+    gap: 40px; /* Increased from 30px */
+    padding: 30px 40px; /* Increased padding */
+    max-width: 1400px; /* Increased from 1200px */
+    margin: 0 auto 80px auto; /* Increased bottom margin */
+  }
+
+  /* Style Cards - Larger size */
+  .style-card {
+    background: rgba(255, 255, 255, 0.15); /* Slightly more opaque */
+    color: white;
+    padding: 40px 30px; /* Increased padding */
+    border-radius: 25px; /* Slightly larger radius */
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.25); /* More visible border */
+    backdrop-filter: blur(8px); /* Increased blur */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3); /* Stronger shadow */
+    position: relative;
+    overflow: hidden;
+    min-height: 200px; /* Minimum height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .style-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+
+  .style-card:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-12px) scale(1.03); /* More pronounced hover */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .style-card:hover::before {
+    transform: translateX(100%);
+  }
+
+  .style-card h2 {
+    font-size: 2rem; /* Larger text */
+    margin-bottom: 20px; /* More spacing */
+    font-family: FashionFont;
+    position: relative;
+    display: inline-block;
+  }
+
+  .style-card h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px; /* Thicker underline */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px; /* Thicker line */
+    background: white;
+    transition: width 0.3s ease;
+  }
+
+  .style-card:hover h2::after {
+    width: 60%; /* Longer underline on hover */
+  }
+
+  .style-card p {
+    color: #f0f0f0;
+    font-size: 1.2rem; /* Slightly larger text */
+    transition: color 0.3s ease;
+    margin-top: 10px;
+  }
+
+  /* Different card colors */
+  .style-card:nth-child(1) { background: rgba(244, 114, 182, 0.25); } 
+  .style-card:nth-child(2) { background: rgba(96, 165, 250, 0.25); } 
+  .style-card:nth-child(3) { background: rgba(74, 222, 128, 0.25); } 
+  .style-card:nth-child(4) { background: rgba(249, 168, 212, 0.25); } 
+  .style-card:nth-child(5) { background: rgba(156, 163, 175, 0.25); } 
+  .style-card:nth-child(6) { background: rgba(244, 63, 94, 0.25); } 
+  .style-card:nth-child(7) { background: rgba(234, 179, 8, 0.25); } 
+  .style-card:nth-child(8) { background: rgba(59, 130, 246, 0.25); } 
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 30px;
+      padding: 20px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin: 100px 0 30px 0;
+    }
+    
+    nav {
+      padding: 15px 20px;
+    }
+    
+    nav ul {
+      gap: 15px;
+    }
+    
+    .style-card {
+      padding: 30px 20px;
+      min-height: 180px;
+    }
+    
+    .style-card h2 {
+      font-size: 1.8rem;
+    }
+  }
+  </style>
+</head>
+<body>
+
+  <!-- Background Carousel -->
+  <div class="background-carousel" id="backgroundCarousel">
+    <div class="background-slide active" style="background-image: url('back1.jpg')"></div>
+    <div class="background-slide" style="background-image: url('back2.jpg')"></div>
+    <div class="background-slide" style="background-image: url('back3.jpg')"></div>
+  </div>
+  <div class="overlay"></div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">OUTFITLAB</div>
+    <ul>
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="styles.html">STYLES</a></li>
+      <li><a href="#">ABOUT</a></li>
+    </ul>
+  </nav>
+
+  <h1>Choose Your Style</h1>
+
+  <div class="grid-container">
+    <a href="cute.html" class="style-card">
+      <h2>Cute Style</h2>
+      <p>Soft & Adorable looks.</p>
+    </a>
+
+    <a href="modern.html" class="style-card">
+      <h2>Modern Style</h2>
+      <p>Trendy & Bold outfits.</p>
+    </a>
+
+    <a href="casual.html" class="style-card">
+      <h2>Casual Style</h2>
+      <p>Comfortable everyday wear.</p>
+    </a>
+
+    <a href="party.html" class="style-card">
+      <h2>Party Wear</h2>
+      <p>Glamorous and flashy.</p>
+    </a>
+    
+    <a href="prof.html" class="style-card">
+      <h2>Professional Style</h2>
+      <p>Polished and formal.</p>
+    </a>
+
+    <a href="rom.html" class="style-card">
+      <h2>Romantic Style</h2>
+      <p>Feminine and dreamy.</p>
+    </a>
+    
+    <a href="traditional.html" class="style-card">
+      <h2>Ethnic Style</h2>
+      <p>Traditional with a modern touch.</p>
+    </a>
+    
+    <a href="sport.html" class="style-card">
+      <h2>Sporty Style</h2>
+      <p>Active and athletic.</p>
+    </a>
+  </div>
+
+  <script>
+    // Background Carousel
+    const backgroundSlides = document.querySelectorAll('.background-slide');
+    let currentBackgroundSlide = 0;
+    
+    function nextBackgroundSlide() {
+        backgroundSlides[currentBackgroundSlide].classList.remove('active');
+        currentBackgroundSlide = (currentBackgroundSlide + 1) % backgroundSlides.length;
+        backgroundSlides[currentBackgroundSlide].classList.add('active');
+    }
+    
+    // Change background slide every 5 seconds
+    setInterval(nextBackgroundSlide, 5000);
+
+    // Card hover effect enhancement
+    const cards = document.querySelectorAll('.style-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+  </script>
+</body>
+</html>

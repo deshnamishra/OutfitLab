@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Outfit - OutfitLab</title>
+  <style>
+    /* Vibrant animated gradient background */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(270deg, #ff6f61, #6a5acd, #1e90ff, #32cd32);
+      background-size: 800% 800%;
+      animation: gradientAnimation 10s ease infinite;
+      color: #fff;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navbar styles */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #ff6f61, #6a5acd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+    .back-btn {
+      margin-right: auto;
+      padding: 8px 15px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+    .delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    nav ul li {
+      display: inline;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 8px 15px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin: 50px 0 40px;
+      background: linear-gradient(90deg, #ff6f61, #6a5acd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .outfit-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .outfit-container img {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .outfit-container img:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    a.choose-style-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 28px;
+      background-color: #ff6f61;
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+    }
+
+    a.choose-style-btn:hover {
+      background-color: #e65a50;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">OutfitLab</div>
+    <ul>
+      <li class="back-btn"><a href="option.html">← Back</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="cute.html">Styles</a></li>
+      <li><a href="feed.html">Your Outfit</a></li>
+    </ul>
+  </nav>
+
+  <h1>Your Outfit</h1>
+
+  <div id="outfits-grid" class="outfits-grid"></div>
+
+  <a class="choose-style-btn" href="option.html">Choose Another Style</a>
+
+  <script>
+    // Styles for the outfits grid
+    const style = document.createElement('style');
+    style.textContent = `
+      .outfits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .outfit-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+      }
+      .outfit-card:hover {
+        transform: translateY(-5px);
+      }
+      .outfit-items {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+      .outfit-items img {
+        width: 100%;
+        max-width: 200px;
+        border-radius: 10px;
+      }
+      .outfit-date {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 50px;
+      }
+    `;
+    document.head.appendChild(style);
+
+    function loadOutfits() {
+      const outfitsGrid = document.getElementById('outfits-grid');
+      const savedOutfits = JSON.parse(localStorage.getItem('savedOutfits') || '[]');
+      
+      outfitsGrid.innerHTML = '';
+      
+      if (savedOutfits.length === 0) {
+        outfitsGrid.innerHTML = `
+          <div class="empty-state">
+            <p>No outfits saved yet. Create and save some outfits in the styles section!</p>
+          </div>
+        `;
+        return;
+      }
+
+      savedOutfits.forEach(outfit => {
+        const outfitCard = document.createElement('div');
+        outfitCard.className = 'outfit-card';
+        
+        const outfitItems = document.createElement('div');
+        outfitItems.className = 'outfit-items';
+        
+        outfit.items.forEach(item => {
+          const img = document.createElement('img');
+          img.src = item.src;
+          img.alt = item.type;
+          outfitItems.appendChild(img);
+        });
+        
+        const outfitDate = document.createElement('div');
+        outfitDate.className = 'outfit-date';
+        outfitDate.textContent = new Date(outfit.date).toLocaleString();
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerHTML = '🗑️';
+        deleteBtn.onclick = () => {
+          const index = savedOutfits.findIndex(o => o.date === outfit.date);
+          if (index > -1) {
+            savedOutfits.splice(index, 1);
+            localStorage.setItem('savedOutfits', JSON.stringify(savedOutfits));
+            loadOutfits();
+          }
+        };
+        
+        outfitCard.appendChild(outfitItems);
+        outfitCard.appendChild(outfitDate);
+        outfitCard.appendChild(deleteBtn);
+        outfitsGrid.appendChild(outfitCard);
+      });
+    }
+
+    // Load outfits when page loads
+    document.addEventListener('DOMContentLoaded', loadOutfits);
+
+    // Listen for storage events to update when new outfits are saved
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'savedOutfits') {
+        loadOutfits();
+      }
+    });
+  </script>
+
+</body>
+</html>

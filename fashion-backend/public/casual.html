@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OutfitLab Canvas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --warning: #f8961e;
+      --danger: #ef233c;
+      --gray: #adb5bd;
+      --dark-gray: #495057;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(270deg, #4361ee, #3f37c9, #4cc9f0, #4895ef);
+      background-size: 400% 400%;
+      animation: gradientAnimation 15s ease infinite;
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+
+    @keyframes gradientAnimation {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    nav {
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--light);
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      padding: 0.5rem 0;
+      transition: var(--transition);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 2rem;
+      gap: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    #canvas {
+      background: rgba(255, 255, 255, 0.9);
+      width: 60%;
+      border-radius: 1rem;
+      min-height: 600px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #canvas.empty::before {
+      content: 'Drag items here to create your outfit';
+      color: var(--dark-gray);
+      font-size: 1.25rem;
+      font-weight: 500;
+      opacity: 0.7;
+    }
+
+    .canvas-item {
+      position: absolute;
+      border-radius: 0.75rem;
+      cursor: move;
+      transition: var(--transition);
+      box-shadow: var(--shadow-md);
+      object-fit: cover;
+      user-select: none;
+    }
+
+    .canvas-item:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-lg);
+      z-index: 10;
+    }
+
+    .selector {
+      width: 40%;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      overflow-y: auto;
+      max-height: calc(100vh - 8rem);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .selector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .selector-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--light);
+    }
+
+    .category-tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      gap: 0.75rem;
+    }
+
+    .category-tab {
+      padding: 0.5rem 1.25rem;
+      cursor: pointer;
+      border-radius: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      transition: var(--transition);
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .category-tab:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .category-tab.active {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      border-color: var(--accent);
+      box-shadow: 0 4px 15px rgba(247, 37, 133, 0.3);
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .image-wrapper {
+      position: relative;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: var(--transition);
+      aspect-ratio: 2/3;
+    }
+
+    .image-wrapper:hover {
+      transform: translateY(-5px);
+    }
+
+    .image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--transition);
+    }
+
+    .image-wrapper:hover img {
+      border-color: var(--accent);
+    }
+
+    .favorite-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--danger);
+      cursor: pointer;
+      opacity: 0;
+      transition: var(--transition);
+      border: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .image-wrapper:hover .favorite-btn {
+      opacity: 1;
+    }
+
+    .favorite-btn.active {
+      background: var(--danger);
+      color: white;
+      opacity: 1;
+    }
+
+    .favorite-btn i {
+      pointer-events: none;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      color: var(--dark-gray);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--gray);
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+      max-width: 300px;
+    }
+
+    .toolbar {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 0.75rem;
+      z-index: 20;
+    }
+
+    .tool-btn {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark);
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      border: none;
+    }
+
+    .tool-btn:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .tool-btn i {
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 1200px) {
+      .container {
+        flex-direction: column;
+      }
+      
+      #canvas, .selector {
+        width: 100%;
+      }
+      
+      .selector {
+        max-height: 400px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem;
+      }
+      
+      .logo {
+        font-size: 1.5rem;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+      
+      .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="logo" href="index.html">
+      <i class="fas fa-tshirt logo-icon"></i>
+      <span>OutfitLab</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="styles.html">Styles</a>
+      <a href="feed.html">Feed</a>
+      <a href="#"><i class="fas fa-user"></i></a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div id="canvas" class="empty">
+      <div class="toolbar">
+        <button class="tool-btn" title="Clear Canvas" id="clear-btn">
+          <i class="fas fa-trash"></i>
+        </button>
+        <button class="tool-btn" title="Save Outfit" id="save-btn">
+          <i class="fas fa-save"></i>
+        </button>
+        <button class="tool-btn" title="Share Outfit" id="share-btn">
+          <i class="fas fa-share-alt"></i>
+        </button>
+      </div>
+    </div>
+    <div class="selector">
+      <div class="selector-header">
+        <h2 class="selector-title">Select Items</h2>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search items..." id="search-input">
+        </div>
+      </div>
+      <div class="category-tabs">
+        <div class="category-tab active" data-category="all">All</div>
+        <div class="category-tab" data-category="upper">Tops</div>
+        <div class="category-tab" data-category="lower">Bottoms</div>
+        <div class="category-tab" data-category="accessories">Accessories</div>
+        <div class="category-tab" data-category="footwear">Footwear</div>
+      </div>
+      <div class="image-grid" id="item-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    // Enhanced image data with more details
+    const images = [
+      { id: 26, type: "upper", src: "Upperwear/top16.png", name: "White Blouse", color: "white", season: "all" },
+      { id: 27, type: "upper", src: "Upperwear/top17.png", name: "Striped T-shirt", color: "blue", season: "summer" },
+      { id: 28, type: "upper", src: "Upperwear/top18.png", name: "Black Crop Top", color: "black", season: "summer" },
+      { id: 29, type: "upper", src: "Upperwear/top19.webp", name: "Black Crop Top", color: "black", season: "summer" },
+      { id: 30, type: "lower", src: "lower/b21.png", name: "Blue Jeans", color: "blue", season: "all" },
+      { id: 31, type: "lower", src: "lower/b22.png", name: "Black Pants", color: "black", season: "all" },
+      { id: 32, type: "lower", src: "lower/b23.jpg", name: "Denim Shorts", color: "blue", season: "summer" },
+      { id: 34, type: "accessories", src: "Upperwear/acc8.png", name: "Silver Necklace", color: "silver", season: "all" },
+      { id: 35, type: "accessories", src: "Upperwear/acc9.jpeg", name: "Leather Belt", color: "brown", season: "all" },
+      { id: 36, type: "accessories", src: "Upperwear/acc10.jpeg", name: "Sun Glasses", color: "black", season: "summer" },
+      { id: 37, type: "accessories", src: "Upperwear/acc13.jpg", name: "Sun Glasses", color: "black", season: "summer" },
+      { id: 38, type: "accessories", src: "Upperwear/acc14.jpeg", name: "Sun Glasses", color: "black", season: "summer" },
+      { id: 39, type: "accessories", src: "Upperwear/acc18.jpeg", name: "Sun Glasses", color: "black", season: "summer" },
+      { id: 40, type: "footwear", src: "Upperwear/f6.jpeg", name: "White Sneakers", color: "white", season: "all" },
+      { id: 41, type: "footwear", src: "Upperwear/f7.webp", name: "Black Boots", color: "black", season: "winter" },
+      { id: 42, type: "footwear", src: "Upperwear/f8.jpeg", name: "Brown Loafers", color: "brown", season: "all" },
+      { id: 43, type: "footwear", src: "Upperwear/f9.png", name: "Brown Loafers", color: "brown", season: "all" }
+
+    ];
+
+    // DOM elements
+    const grid = document.getElementById("item-grid");
+    const canvas = document.getElementById("canvas");
+    const searchInput = document.getElementById("search-input");
+    const clearBtn = document.getElementById("clear-btn");
+    const saveBtn = document.getElementById("save-btn");
+    const shareBtn = document.getElementById("share-btn");
+    
+    // State management
+    const categoryItemsOnCanvas = {};
+    const favoriteSet = new Set();
+    let currentFilter = 'all';
+    let currentSearch = '';
+
+    // Initialize the app
+    function init() {
+      displayImages();
+      setupEventListeners();
+      checkCanvasEmptyState();
+    }
+
+    // Display images based on filter and search
+    function displayImages(filter = 'all', search = '') {
+      grid.innerHTML = '';
+      
+      const filteredImages = images.filter(image => {
+        const matchesFilter = filter === 'all' || image.type === filter;
+        const matchesSearch = image.name.toLowerCase().includes(search.toLowerCase()) || 
+                            image.color.toLowerCase().includes(search.toLowerCase()) ||
+                            image.season.toLowerCase().includes(search.toLowerCase());
+        return matchesFilter && matchesSearch;
+      });
+
+      if (filteredImages.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <p>No items found matching your criteria</p>
+          </div>
+        `;
+        return;
+      }
+
+      filteredImages.forEach(image => {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("image-wrapper");
+        wrapper.setAttribute('data-name', image.name.toLowerCase());
+        wrapper.setAttribute('data-color', image.color.toLowerCase());
+        wrapper.setAttribute('data-season', image.season.toLowerCase());
+
+        const imgEl = document.createElement("img");
+        imgEl.src = image.src;
+        imgEl.alt = image.name;
+        imgEl.title = `${image.name} (${image.color}, ${image.season})`;
+
+        const favBtn = document.createElement("button");
+        favBtn.className = favoriteSet.has(image.id) ? "favorite-btn active" : "favorite-btn";
+        favBtn.innerHTML = favoriteSet.has(image.id) ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+
+        favBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleFavorite(image.id, favBtn);
+        });
+
+        imgEl.addEventListener("click", () => {
+          addToCanvas(image);
+        });
+
+        wrapper.appendChild(imgEl);
+        wrapper.appendChild(favBtn);
+        grid.appendChild(wrapper);
+      });
+    }
+
+    // Add item to canvas
+    function addToCanvas(image) {
+      if (categoryItemsOnCanvas[image.type]) {
+        canvas.removeChild(categoryItemsOnCanvas[image.type]);
+      }
+
+      const newImg = document.createElement("img");
+      newImg.src = image.src;
+      newImg.classList.add("canvas-item");
+      newImg.setAttribute("draggable", "false");
+      newImg.dataset.itemId = image.id;
+      newImg.title = image.name;
+
+      // Set appropriate size based on item type
+      if (image.type === "upper") {
+        newImg.style.width = "180px";
+        newImg.style.height = "240px";
+      } else if (image.type === "lower") {
+        newImg.style.width = "160px";
+        newImg.style.height = "220px";
+      } else {
+        newImg.style.width = "120px";
+        newImg.style.height = "150px";
+      }
+
+      // Position randomly but within canvas bounds
+      const maxX = canvas.clientWidth - parseInt(newImg.style.width);
+      const maxY = canvas.clientHeight - parseInt(newImg.style.height);
+      newImg.style.left = Math.random() * maxX + "px";
+      newImg.style.top = Math.random() * maxY + "px";
+
+      // Make draggable
+      setupDraggable(newImg);
+
+      canvas.appendChild(newImg);
+      categoryItemsOnCanvas[image.type] = newImg;
+      
+      // Update empty state
+      checkCanvasEmptyState();
+    }
+
+    // Setup draggable functionality for canvas items
+    function setupDraggable(element) {
+      let isDragging = false;
+      let offsetX, offsetY;
+
+      element.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+        element.style.zIndex = 1000;
+        element.style.transform = "scale(1.05)";
+        e.preventDefault();
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        
+        const canvasRect = canvas.getBoundingClientRect();
+        let x = e.clientX - canvasRect.left - offsetX;
+        let y = e.clientY - canvasRect.top - offsetY;
+        
+        // Constrain to canvas boundaries
+        x = Math.max(0, Math.min(canvas.clientWidth - element.clientWidth, x));
+        y = Math.max(0, Math.min(canvas.clientHeight - element.clientHeight, y));
+        
+        element.style.left = x + "px";
+        element.style.top = y + "px";
+      });
+
+      document.addEventListener("mouseup", () => {
+        if (isDragging) {
+          isDragging = false;
+          element.style.zIndex = "";
+          element.style.transform = "scale(1)";
+        }
+      });
+    }
+
+    // Toggle favorite status
+    function toggleFavorite(id, button) {
+      if (favoriteSet.has(id)) {
+        favoriteSet.delete(id);
+        button.innerHTML = '<i class="far fa-heart"></i>';
+        button.classList.remove("active");
+      } else {
+        favoriteSet.add(id);
+        button.innerHTML = '<i class="fas fa-heart"></i>';
+        button.classList.add("active");
+      }
+    }
+
+    // Check if canvas is empty
+    function checkCanvasEmptyState() {
+      if (Object.keys(categoryItemsOnCanvas).length === 0) {
+        canvas.classList.add("empty");
+      } else {
+        canvas.classList.remove("empty");
+      }
+    }
+
+    // Clear canvas
+    function clearCanvas() {
+      Object.values(categoryItemsOnCanvas).forEach(item => {
+        if (item.parentNode) {
+          canvas.removeChild(item);
+        }
+      });
+      
+      // Clear the categoryItemsOnCanvas object
+      for (const key in categoryItemsOnCanvas) {
+        delete categoryItemsOnCanvas[key];
+      }
+      
+      checkCanvasEmptyState();
+    }
+
+    // Save outfit to feed
+    function saveOutfit() {
+      if (Object.keys(categoryItemsOnCanvas).length === 0) {
+        alert("Please add items to the canvas before saving.");
+        return;
+      }
+      
+      // Get all items on canvas
+      const outfitItems = [];
+      Object.values(categoryItemsOnCanvas).forEach(item => {
+        outfitItems.push({
+          id: item.dataset.itemId,
+          src: item.src,
+          type: images.find(img => img.id == item.dataset.itemId)?.type || 'unknown'
+        });
+      });
+      
+      // Save to localStorage
+      const savedOutfits = JSON.parse(localStorage.getItem('savedOutfits') || '[]');
+      const newOutfit = {
+        id: Date.now(),
+        items: outfitItems,
+        date: new Date().toISOString(),
+        style: 'casual' // Add style identifier
+      };
+      savedOutfits.push(newOutfit);
+      localStorage.setItem('savedOutfits', JSON.stringify(savedOutfits));
+      
+      // Trigger storage event to update feed.html
+      const event = new Event('storage');
+      event.key = 'savedOutfits';
+      event.newValue = JSON.stringify(savedOutfits);
+      window.dispatchEvent(event);
+      
+      alert("Outfit saved to your feed!");
+    }
+
+    // Share outfit (placeholder functionality)
+    function shareOutfit() {
+      if (Object.keys(categoryItemsOnCanvas).length === 0) {
+        alert("Please add items to the canvas before sharing.");
+        return;
+      }
+      
+      // In a real app, this would integrate with social media
+      alert("Share functionality would be implemented here");
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Category tabs
+      const tabs = document.querySelectorAll('.category-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentFilter = tab.dataset.category;
+          displayImages(currentFilter, currentSearch);
+        });
+      });
+
+      // Search input
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value.trim();
+        displayImages(currentFilter, currentSearch);
+      });
+
+      // Toolbar buttons
+      clearBtn.addEventListener('click', clearCanvas);
+      saveBtn.addEventListener('click', saveOutfit);
+      shareBtn.addEventListener('click', shareOutfit);
+    }
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

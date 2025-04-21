@@ -296,3 +296,500 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+_________________________________________________________________________________________________________________________
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OutfitLab - Create Dream Outfits</title>
+    <style>
+        @font-face 
+        {
+            font-family: FashionFont;
+            src: url(Kugile_Demo.ttf);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: FashionFont;
+        }
+
+        body {
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Full-screen carousel background */
+        .background-carousel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .background-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1.5s ease-in-out;
+            opacity: 0;
+        }
+
+        .background-slide.active {
+            opacity: 1;
+        }
+
+        .gradient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #db7984 #923541);
+            z-index: -1;
+        }
+
+        /* Signup Modal */
+        .modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .modal-header h2 {
+            color: #2d3436;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            background: #feb1c0;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #ff8fa3;
+            transform: scale(1.05);
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 900;
+        }
+
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .nav-links a:hover {
+            color: rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Content Sections */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 180px 20px 120px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .hero p {
+            font-size: 1.8em;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+        }
+
+        /* Section Styling */
+        .section {
+            padding: 100px 50px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .section-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .section-text h2 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .section-text p {
+            font-size: 1.2em;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .section-image img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .section-image img:hover {
+            transform: scale(1.03);
+        }
+
+        .content-box {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            text-align: center;
+            padding: 100px 50px;
+        }
+
+        .testimonials h2 {
+            font-size: 3em;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .testimonial-grid {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            max-width: 350px;
+            transition: transform 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .testimonial-card p {
+            font-style: italic;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 40px 50px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .footer-bottom {
+            margin-top: 20px;
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Carousel -->
+    <div class="background-carousel" id="backgroundCarousel">
+        <div class="background-slide active" style="background-image: url('back1.jpg')"></div>
+        <div class="background-slide" style="background-image: url('back2.jpg')"></div>
+        <div class="background-slide" style="background-image: url('back3.jpg')"></div>
+    </div>
+    <div class="gradient-overlay"></div>
+
+    <!-- Signup Modal -->
+    <!-- <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Welcome to OutfitLab</h2>
+                <p>Create your account to begin</p>
+            </div>
+            <form id="signupForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Email Address" required>
+                </div>
+                <button type="submit">Get Started</button>
+            </form>
+        </div>
+    </div> -->
+
+    <nav>
+        <div class="logo">OUTFITLAB</div>
+        <div class="nav-links">
+            <a href="#home">HOME</a>
+            <a href="option.html">STYLE</a>
+            <a href="#profile">PROFILE</a>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="hero" id="home">
+            <div class="content-box fade-in">
+                <h1>Create Your Dream Outfits</h1>
+                <p>Design your perfect look with our outfit builder</p>
+                <a href="option.html"><button><b>Style Now!</b></button></a>
+            </div>
+        </div>
+
+        <!-- <section class="section" id="style">
+            <div class="section-content">
+                <div class="section-text content-box fade-in">
+                    <h2>Your Personal Style</h2>
+                    <p>Discover unique outfits tailored to your personal taste and body type. Our AI-powered system learns your preferences over time.</p>
+                    <p>With thousands of clothing items to browse and advanced filtering options, create outfits for any occasion instantly.</p>
+                    <button>Create Your Style</button>
+                </div>
+                <div class="section-image fade-in">
+                    <img src="2.jpg" alt="Personal Style">
+                </div>
+            </div>
+        </section> -->
+
+        <!-- <section class="section" id="profile">
+            <div class="section-content">
+                <div class="section-image fade-in">
+                    <img src="https://picsum.photos/600/400?random=7" alt="User Profile">
+                </div>
+                <div class="section-text content-box fade-in">
+                    <h2>Your Fashion Profile</h2>
+                    <p>Track your favorite styles, save outfit combinations, and follow fashion influencers all in one place.</p>
+                    <p>Get personalized recommendations based on your previous selections and current fashion trends.</p>
+                    <button>View Your Profile</button>
+                </div>
+            </div>
+        </section> -->
+
+        <section class="section" id="about">
+            <div class="section-content">
+                <div class="section-text content-box fade-in">
+                    <h2>About OutfitLab</h2>
+                    <p>At OutfitLab, we make fashion fun and accessible. Our platform allows you to mix, match, and create the perfect outfit.</p>
+                    <p>We are dedicated to transforming the way you explore fashion with AI-powered suggestions and thousands of clothing options.</p>
+                    <button>Learn More</button>
+                </div>
+                <div class="section-image fade-in">
+                    <img src="" alt="Fashion Design">
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials" id="testimonials">
+            <div class="content-box fade-in">
+                <h2>What Our Users Say</h2>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card fade-in">
+                        <p>"OutfitLab has completely changed how I shop and style my outfits! The recommendations are always on point and help me discover new styles I wouldn't have tried otherwise."</p>
+                        <strong>- Sarah J.</strong>
+                    </div>
+                    <div class="testimonial-card fade-in">
+                        <p>"An amazing tool for anyone who loves fashion! The interface is intuitive and the outfit combinations are endless. I've saved so much time getting dressed in the morning."</p>
+                        <strong>- Mike C.</strong>
+                    </div>
+                    <div class="testimonial-card fade-in">
+                        <p>"The personal style recommendations are incredibly accurate! It's like having a personal stylist that knows exactly what I like and what looks good on me."</p>
+                        <strong>- Emma R.</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Signup Modal -->
+<div class="modal" id="signupModal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Welcome to OutfitLab</h2>
+            <p>Create your account to begin</p>
+        </div>
+        <form id="signupForm">
+            <div class="form-group">
+                <input type="text" placeholder="Full Name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" placeholder="Email Address" required>
+            </div>
+            <button type="submit">Get Started</button>
+        </form>
+        <button onclick="closeModal()" style="margin-top: 20px; background: #ccc; color: black;">Close</button>
+    </div>
+</div>
+
+<!-- Signup Button at the End -->
+<div style="text-align: center; padding: 50px;">
+    <button onclick="openModal()">Sign Up Now</button>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById('signupModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('signupModal').style.display = 'none';
+    }
+</script>
+
+        <footer>
+            <p>© 2025 OutfitLab. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Modal management
+        // window.onload = () => document.getElementById('signupModal').style.display = 'flex';
+        // document.getElementById('signupForm').addEventListener('submit', e => {
+        //     e.preventDefault();
+        //     document.getElementById('signupModal').style.display = 'none';
+        // });
+
+        // Background Carousel
+        const backgroundSlides = document.querySelectorAll('.background-slide');
+        let currentBackgroundSlide = 0;
+        
+        function nextBackgroundSlide() {
+            backgroundSlides[currentBackgroundSlide].classList.remove('active');
+            currentBackgroundSlide = (currentBackgroundSlide + 1) % backgroundSlides.length;
+            backgroundSlides[currentBackgroundSlide].classList.add('active');
+        }
+        
+        // Change background slide every 5 seconds
+        setInterval(nextBackgroundSlide, 5000);
+
+        // Scroll Animation
+        function checkFadeElements() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            const triggerBottom = window.innerHeight * 0.8;
+
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                if (elementTop < triggerBottom) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Initial check on load
+        window.addEventListener('load', checkFadeElements);
+        // Check on scroll
+        window.addEventListener('scroll', checkFadeElements);
+    </script>
+</body>
+</html>

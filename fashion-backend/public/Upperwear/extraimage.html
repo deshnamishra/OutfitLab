@@ -1,0 +1,75 @@
+<?php
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Load environment variables from .env file
+$envFile = __DIR__ . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile);
+    foreach ($lines as $line) {
+        putenv(trim($line));
+    }
+}
+
+// Database connection using environment variables
+$servername = getenv('DB_HOST');
+$username = getenv('DB_USER');
+$password = getenv('DB_PASSWORD');
+$dbname = getenv('DB_NAME');
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Query to retrieve image paths
+$sql = "SELECT image_url FROM cute";
+$result = $conn->query($sql);
+
+// Check if the query was successful
+if (!$result) {
+    die("Query failed: " . $conn->error);
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        img {
+            width: 100px; /* Set the width of the images */
+            height: auto; /* Maintain aspect ratio */
+            margin: 5px; /* Add some space between images */
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Gallery</h1>
+    <div>
+        <?php
+        if ($result->num_rows > 0) {
+            // Output data of each row
+            while ($row = $result->fetch_assoc()) {
+                // Ensure the image URL is properly formatted
+                $imageUrl = htmlspecialchars($row['image_url']);
+                echo '<img src="' . $imageUrl . '" alt="Image">';
+                // Optional: Debugging line to show the URL
+                // echo '<p>' . $imageUrl . '</p>';
+            }
+        } else {
+            echo "No images found.";
+        }
+
+        // Close the connection
+        $conn->close();
+        ?>
+    </div>
+</body>
+</html>
